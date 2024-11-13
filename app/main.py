@@ -22,7 +22,7 @@ async def lifespan(app: FastAPI):
     await bot.session.close()
     await dp.storage.close()
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=lifespan, docs_url=None, redoc_url=None)
 
 
 @app.post(settings.webhook_path)
