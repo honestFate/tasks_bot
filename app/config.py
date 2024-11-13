@@ -75,7 +75,7 @@ LOGGING_CONFIG = {
             'filename': 'logs/logfile.txt'
         },
         'telegram_warning': {
-            'class': 'services.log_handlers.TelegramLogsHandler',
+            'class': 'app.services.log_handlers.TelegramLogsHandler',
             'formatter': 'my_verbose',
             'level': 'WARNING'
         },
