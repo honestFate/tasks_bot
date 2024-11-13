@@ -80,7 +80,7 @@ LOGGING_CONFIG = {
             'level': 'WARNING'
         },
         'telegram_info': {
-            'class': 'services.log_handlers.TelegramLogsHandler',
+            'class': 'app.services.log_handlers.TelegramLogsHandler',
             'formatter': 'my_verbose',
             'level': 'INFO'
         }
