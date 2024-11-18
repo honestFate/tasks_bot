@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 from pydantic import HttpUrl, BaseSettings
 import logging
+import logging.config
 
 load_dotenv()
 
@@ -51,6 +52,9 @@ CENSUS = '000000004'
 
 DEBIT = '000000002'
 
+if not os.path.exists('logs'):
+    os.makedirs('logs')
+
 LOGGING_CONFIG = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -69,55 +73,57 @@ LOGGING_CONFIG = {
             'class': 'logging.StreamHandler',
             'formatter': 'verbose',
         },
-        'file_handler': {
+        'info_file_handler': {
             'class': 'logging.FileHandler',
             'formatter': 'verbose',
-            'filename': 'logs/logfile.txt'
+            'filename': 'logs/info.log'
+        },
+        'error_file_handler': {
+            'class': 'logging.FileHandler',
+            'formatter': 'verbose',
+            'filename': 'logs/error.log',
+            'level': logging.ERROR,
         },
         'telegram_warning': {
             'class': 'app.services.log_handlers.TelegramLogsHandler',
             'formatter': 'my_verbose',
             'level': 'WARNING'
         },
-        'telegram_info': {
-            'class': 'app.services.log_handlers.TelegramLogsHandler',
-            'formatter': 'my_verbose',
-            'level': 'INFO'
-        }
     },
     'loggers': {
-        'bot': {
-            'handlers': ['stream_handler', 'file_handler', 'telegram_info', 'telegram_warning'],
+        '': {
+            'handlers': ['stream_handler', 'info_file_handler', 'error_file_handler', 'telegram_warning'],
             'level': 'INFO',
             'propagate': False
         },
         'handlers.done_handlers': {
-            'handlers': ['stream_handler', 'file_handler', 'telegram_warning'],
+            'handlers': ['stream_handler', 'info_file_handler', 'telegram_warning'],
             'level': 'INFO',
             'propagate': False
         },
         'handlers.dont_handler': {
-            'handlers': ['stream_handler', 'file_handler', 'telegram_warning'],
+            'handlers': ['stream_handler', 'info_file_handler', 'telegram_warning'],
             'level': 'INFO',
             'propagate': False
         },
         'handlers.forward_handlers': {
-            'handlers': ['stream_handler', 'file_handler', 'telegram_warning'],
+            'handlers': ['stream_handler', 'info_file_handler', 'telegram_warning'],
             'level': 'INFO',
             'propagate': False
         },
         'handlers.other_handlers': {
-            'handlers': ['stream_handler', 'file_handler', 'telegram_warning'],
+            'handlers': ['stream_handler', 'info_file_handler', 'telegram_warning'],
             'level': 'INFO',
             'propagate': False
         },
         'database.database': {
-            'handlers': ['stream_handler', 'file_handler', 'telegram_warning'],
+            'handlers': ['stream_handler', 'info_file_handler', 'telegram_warning'],
             'level': 'INFO',
             'propagate': False
         },
     }
 }
-
 logging.config.dictConfig(LOGGING_CONFIG)
+logger = logging.getLogger('bot')
+logger.info("Логгер успешно настроен!")
 
