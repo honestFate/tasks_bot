@@ -2,7 +2,7 @@ import logging
 
 import jwt
 import httpx
-import re
+# import re
 
 from app.config import settings
 
@@ -124,11 +124,11 @@ def token_generator(data):
     return jwt.encode(code, secret, algorithm=ALGORITHM)
 
 
-def clean_census_link(task):
-    clean_task_comment = task['author_comment']['comment']
-    author_comment = ' '.join(clean_task_comment.split('_')[:-1])
-    link = clean_task_comment.split('_')[-1]
-    return author_comment, link
+# def clean_census_link(task):
+#     clean_task_comment = task['author_comment']['comment']
+#     author_comment = ' '.join(clean_task_comment.split('_')[:-1])
+#     link = clean_task_comment.split('_')[-1]
+#     return author_comment, link
 
 
 if __name__ == '__main__':

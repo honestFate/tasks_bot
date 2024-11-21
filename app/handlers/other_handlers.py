@@ -9,7 +9,7 @@ from app.database.database import get_trades_tasks_list, put_register, get_worke
 from app.keyboards.trades_keyboards import create_trades_register_inline_kb, create_new_tasks_inline_kb, \
      create_new_tasks_inline_kb_census, create_full_census_inline_kb
 from app.lexicon.lexicon import LEXICON
-from app.services.utils import clear_date, del_ready_task, update_task_message_id, token_generator, clean_census_link
+from app.services.utils import clear_date, del_ready_task, update_task_message_id, token_generator
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -51,7 +51,7 @@ async def census_tasks_command(message: Message):
             for task in tasks_list['text']:
                 date = clear_date(task['date'])
                 deadline = clear_date(task['deadline'])
-                author_comment = clean_census_link(task)[0]
+                author_comment = task['author_comment']['comment'].split('_')[0]
 
                 text = f"Задача от " \
                        f"{date}\n\n" \
