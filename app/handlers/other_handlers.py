@@ -9,8 +9,7 @@ from app.database.database import get_trades_tasks_list, put_register, get_worke
 from app.keyboards.trades_keyboards import create_trades_register_inline_kb, create_new_tasks_inline_kb, \
      create_new_tasks_inline_kb_census, create_full_census_inline_kb
 from app.lexicon.lexicon import LEXICON
-from app.services.utils import clear_date, del_ready_task, update_task_message_id, token_generator
-
+from app.services.utils import clear_date, del_ready_task, update_task_message_id, token_generator, clean_census_link
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -50,51 +49,31 @@ async def census_tasks_command(message: Message):
         if len(tasks_list['text']) > 0:
 
             for task in tasks_list['text']:
-
-                group_name = task['base']['group']
                 date = clear_date(task['date'])
                 deadline = clear_date(task['deadline'])
+                author_comment = clean_census_link(task)[0]
 
-                if group_name == '000000004':  # Если "Разработка контрагента"
+                text = f"Задача от " \
+                       f"{date}\n\n" \
+                       f"Сенсус по адресу: '{task['name']}'\n\n" \
+                       f"<b>Исполнить до:</b>\n" \
+                       f"{deadline}\n" \
+                       f"<b>Автор:</b>\n" \
+                       f"{task['author']['name']}\n" \
+                       f"<b>Контрагент:</b>\n" \
+                       f"{task['partner']['name']}\n" \
+                       f"<b>Основание:</b>\n" \
+                       f"{task['base']['name']}\n" \
+                       f"<b>Комментарий автора:</b>\n" \
+                       f"{author_comment}"
 
-                    author_comment = task['author_comment']['comment'].split('_')[0]
+                await message.answer(
+                    text=text,
+                    reply_markup=create_new_tasks_inline_kb_census(task))
 
-                    text = f"Задача от " \
-                           f"{date}\n\n" \
-                           f"Сенсус по адресу: '{task['name']}'\n\n" \
-                           f"<b>Исполнить до:</b>\n" \
-                           f"{deadline}\n" \
-                           f"<b>Автор:</b>\n" \
-                           f"{task['author']['name']}\n" \
-                           f"<b>Контрагент:</b>\n" \
-                           f"{task['partner']['name']}\n" \
-                           f"<b>Основание:</b>\n" \
-                           f"{task['base']['name']}\n" \
-                           f"<b>Комментарий автора:</b>\n" \
-                           f"{author_comment}"
-
-                    await message.answer(
-                        text=text,
-                        reply_markup=create_new_tasks_inline_kb_census(task))
-
-                else:
-                    text = f"Задача от " \
-                           f"{date}\n\n" \
-                           f"'{TASK_GROUP[group_name]}'\n\n" \
-                           f"<b>Исполнить до:</b>\n" \
-                           f"{deadline}\n" \
-                           f"<b>Автор:</b>\n" \
-                           f"{task['author']['name']}\n" \
-                           f"<b>Контрагент:</b>\n" \
-                           f"{task['partner']['name']}\n" \
-                           f"<b>Основание:</b>\n" \
-                           f"{task['base']['name']}\n" \
-                           f"<b>Комментарий автора:</b>\n" \
-                           f"{task['author_comment']['comment']}"
-
-                    await message.answer(
-                            text=text,
-                            reply_markup=create_new_tasks_inline_kb(task))
+                # await message.answer(
+                #     text=text,
+                #     reply_markup=create_new_tasks_inline_kb(task))
 
         else:
             await message.answer(text="У вас нет новых задач")
@@ -117,51 +96,28 @@ async def debit_command(message: Message):
                 date = clear_date(task['date'])
                 deadline = clear_date(task['deadline'])
 
-                if group_name == '000000004':  # Если "Разработка контрагента"
+                text = f"Задача от " \
+                       f"{date}\n\n" \
+                       f"'{TASK_GROUP[group_name]}'\n\n" \
+                       f"<b>Исполнить до:</b>\n" \
+                       f"{deadline}\n" \
+                       f"<b>Автор:</b>\n" \
+                       f"{task['author']['name']}\n" \
+                       f"<b>Контрагент:</b>\n" \
+                       f"{task['partner']['name']}\n" \
+                       f"<b>Основание:</b>\n" \
+                       f"{task['base']['name']}\n" \
+                       f"<b>Комментарий автора:</b>\n" \
+                       f"{task['author_comment']['comment']}"
 
-                    author_comment = task['author_comment']['comment'].split('_')[0]
-
-                    text = f"Задача от " \
-                           f"{date}\n\n" \
-                           f"Сенсус по адресу: '{task['name']}'\n\n" \
-                           f"<b>Исполнить до:</b>\n" \
-                           f"{deadline}\n" \
-                           f"<b>Автор:</b>\n" \
-                           f"{task['author']['name']}\n" \
-                           f"<b>Контрагент:</b>\n" \
-                           f"{task['partner']['name']}\n" \
-                           f"<b>Основание:</b>\n" \
-                           f"{task['base']['name']}\n" \
-                           f"<b>Комментарий автора:</b>\n" \
-                           f"{author_comment}"
-
-                    await message.answer(
-                        text=text,
-                        reply_markup=create_new_tasks_inline_kb_census(task))
-
-                else:
-                    text = f"Задача от " \
-                           f"{date}\n\n" \
-                           f"'{TASK_GROUP[group_name]}'\n\n" \
-                           f"<b>Исполнить до:</b>\n" \
-                           f"{deadline}\n" \
-                           f"<b>Автор:</b>\n" \
-                           f"{task['author']['name']}\n" \
-                           f"<b>Контрагент:</b>\n" \
-                           f"{task['partner']['name']}\n" \
-                           f"<b>Основание:</b>\n" \
-                           f"{task['base']['name']}\n" \
-                           f"<b>Комментарий автора:</b>\n" \
-                           f"{task['author_comment']['comment']}"
-
-                    await message.answer(
-                            text=text,
-                            reply_markup=create_new_tasks_inline_kb(task))
+                await message.answer(
+                    text=text,
+                    reply_markup=create_new_tasks_inline_kb(task))
 
         else:
             await message.answer(text="У вас нет новых задач")
-    else:
-        await message.answer(text=tasks_list['text'])
+    # else:
+    # await message.answer(text=tasks_list['text'])
 
 
 @router.message(F.content_type.in_({ContentType.CONTACT}))

@@ -1,6 +1,7 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
 from app.lexicon.lexicon import TASK_KEYS
+from app.services.utils import clean_census_link
 
 
 def create_trades_register_inline_kb():
@@ -39,7 +40,8 @@ def create_new_tasks_inline_kb(task):
 
 
 def create_new_tasks_inline_kb_census(task):  # Клавиатура, только переадресация
-    url = task['author_comment']['comment'].split('_')[1]
+
+    url = clean_census_link(task)[1]
 
     census_button: InlineKeyboardButton = InlineKeyboardButton(
         text=TASK_KEYS['census'],
