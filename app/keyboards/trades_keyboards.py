@@ -41,7 +41,7 @@ def create_new_tasks_inline_kb(task):
 
 def create_new_tasks_inline_kb_census(task):  # Клавиатура, только переадресация
 
-    url = task['author_comment']['comment'].split('_')[1]
+    url = task['author_comment']['comment'].split('_')[1].strip()
 
     census_button: InlineKeyboardButton = InlineKeyboardButton(
         text=TASK_KEYS['census'],

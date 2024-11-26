@@ -14,7 +14,7 @@ def get_token():
     #                                                                     'password': AUTH_DATA['password']})
     # logger.info(f"GET запрос {API_METHODS['auth']} - {r.status_code}")
     # return r.json()['token']
-    return settings.bot_token
+    return settings.api_token
 
 
 async def get_workers_number(worker_number):

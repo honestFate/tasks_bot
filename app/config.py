@@ -9,6 +9,7 @@ load_dotenv()
 
 class Settings(BaseSettings):
     logs_bot_token: str
+    api_token: str = os.getenv('API_TOKEN')
     bot_token: str = os.getenv('BOT_TOKEN')
     domain: HttpUrl = os.getenv('DOMAIN')
     api_base_url: str = os.getenv('API_BASE_URL')
