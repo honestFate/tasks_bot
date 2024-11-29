@@ -229,7 +229,7 @@ async def put_register(phone: str, chat_id: str):
         return {'status': False, 'message': "Техническая ошибка. Обратитесь в тех.поддержку"}
 
 
-async def get_forward_supervisor_controller(worker: str, author: str) -> dict:
+async def get_forward_supervisor_controller(worker: dict, author: str) -> dict:
 
     async with httpx.AsyncClient() as async_requests:
         controller_res = await async_requests.get(url=f"{settings.api_base_url}{API_METHODS['workers_f']}?controller=true",
@@ -238,7 +238,7 @@ async def get_forward_supervisor_controller(worker: str, author: str) -> dict:
     logger.info(f"GET запрос{API_METHODS['workers_f']}?controller=true - {controller_res.status_code}")
     controller = controller_res.json()[0]
 
-    if worker['partner'] is not None:
+    if worker.get('partner') is not None:
         worker_data = await get_workers_number(worker['partner'])
         worker_partner = worker_data.json()
     else:
