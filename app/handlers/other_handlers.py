@@ -1,4 +1,6 @@
+import asyncio
 import logging
+from time import sleep
 
 from aiogram import Router, F
 from aiogram.filters import CommandStart, Command
@@ -67,14 +69,10 @@ async def census_tasks_command(message: Message):
                        f"<b>Комментарий автора:</b>\n" \
                        f"{author_comment}"
 
+                await asyncio.sleep(2)
                 await message.answer(
                     text=text,
                     reply_markup=create_new_tasks_inline_kb_census(task))
-
-                # await message.answer(
-                #     text=text,
-                #     reply_markup=create_new_tasks_inline_kb(task))
-
         else:
             await message.answer(text="У вас нет новых задач")
     else:
