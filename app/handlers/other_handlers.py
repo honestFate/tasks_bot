@@ -108,6 +108,7 @@ async def debit_command(message: Message):
                        f"<b>Комментарий автора:</b>\n" \
                        f"{task['author_comment']['comment']}"
 
+                await asyncio.sleep(1)
                 await message.answer(
                     text=text,
                     reply_markup=create_new_tasks_inline_kb(task))
