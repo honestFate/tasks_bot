@@ -85,6 +85,7 @@ async def debit_command(message: Message):
     tasks_list = await get_trades_tasks_list(message.from_user.id, DEBIT)
 
     logger.info(f"Поступила команда tasks - {message.from_user.id} - {message.from_user.username}")
+
     if tasks_list['status']:
         if len(tasks_list['text']) > 0:
 
@@ -115,8 +116,8 @@ async def debit_command(message: Message):
 
         else:
             await message.answer(text="У вас нет новых задач")
-    # else:
-    # await message.answer(text=tasks_list['text'])
+    else:
+        await message.answer(text=tasks_list['text'])
 
 
 @router.message(F.content_type.in_({ContentType.CONTACT}))
