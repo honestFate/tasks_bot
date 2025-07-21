@@ -86,23 +86,18 @@ LOGGING_CONFIG = {
             'level': logging.ERROR,
         },
         'telegram_warning': {
-            'class': 'app.services.log_handlers.TelegramLogsHandler',
+            'class': 'app.services.log_handlers.SafeTelegramLogsHandler',
             'formatter': 'my_verbose',
-            'level': 'WARNING'
+            'level': 'ERROR'
         },
     },
     'loggers': {
         '': {
-            'handlers': ['stream_handler', 'info_file_handler', 'error_file_handler', 'telegram_warning'],
+            'handlers': ['stream_handler', 'info_file_handler', 'error_file_handler'],
             'level': 'INFO',
             'propagate': False
         },
         'handlers.done_handlers': {
-            'handlers': ['stream_handler', 'info_file_handler', 'telegram_warning'],
-            'level': 'INFO',
-            'propagate': False
-        },
-        'handlers.dont_handler': {
             'handlers': ['stream_handler', 'info_file_handler', 'telegram_warning'],
             'level': 'INFO',
             'propagate': False
@@ -122,9 +117,24 @@ LOGGING_CONFIG = {
             'level': 'INFO',
             'propagate': False
         },
+        'aiohttp.access': {
+            'handlers': ['stream_handler', 'info_file_handler'],
+            'level': 'WARNING',
+            'propagate': False
+        },
+        'aiohttp.client': {
+            'handlers': ['stream_handler', 'info_file_handler'],
+            'level': 'WARNING',
+            'propagate': False
+        },
+        'httpx': {
+            'handlers': ['stream_handler', 'info_file_handler'],
+            'level': 'WARNING',
+            'propagate': False
+        }
     }
 }
+
 logging.config.dictConfig(LOGGING_CONFIG)
 logger = logging.getLogger('bot')
 logger.info("Логгер успешно настроен!")
-
