@@ -120,12 +120,13 @@ async def debit_command(message: Message):
         await message.answer(text=tasks_list['text'])
 
 
+
 @router.message(F.content_type.in_({ContentType.CONTACT}))
-async def get_contact(message: ContentType.CONTACT):
+async def get_contact(message: Message):
 
     phone = message.contact.phone_number
     chat_id = message.contact.user_id
-    message.delete()
+    await message.delete()
     response = await put_register(phone=phone, chat_id=chat_id)
     logger.info(f"Передан номер телефона - {phone} - {message.from_user.id} - {message.from_user.username}")
     if response['status']:
