@@ -3,8 +3,20 @@ from fastapi import FastAPI, Request
 import logging
 from aiogram import types
 from app.bot import bot, dp
-from app.config import settings
+from app.config import settings, logger
 from contextlib import asynccontextmanager
+import sys
+
+
+def log_unhandled_exception(exc_type, exc_value, exc_traceback):
+    """Log uncaught exceptions and forward them to telegram handler."""
+    if issubclass(exc_type, KeyboardInterrupt):
+        sys.__excepthook__(exc_type, exc_value, exc_traceback)
+        return
+    logger.exception("Unhandled exception", exc_info=(exc_type, exc_value, exc_traceback))
+
+
+sys.excepthook = log_unhandled_exception
 
 from app.keyboards.main_menu import set_main_menu
 from app.database.database import close_http_client
