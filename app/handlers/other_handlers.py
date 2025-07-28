@@ -13,7 +13,6 @@ from app.keyboards.trades_keyboards import create_trades_register_inline_kb, cre
 from app.lexicon.lexicon import LEXICON
 from app.services.utils import clear_date, del_ready_task, update_task_message_id, token_generator
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 router: Router = Router()
