@@ -93,7 +93,7 @@ LOGGING_CONFIG = {
     },
     'loggers': {
         '': {
-            'handlers': ['stream_handler', 'info_file_handler', 'error_file_handler'],
+            'handlers': ['stream_handler', 'info_file_handler', 'error_file_handler', 'telegram_warning'],
             'level': 'INFO',
             'propagate': False
         },

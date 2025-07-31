@@ -371,7 +371,7 @@ async def get_ready_result_task(result):
             logger.info(f"Контрольная дата установлена для результата {result_item} - {task['number']}")
             result_item["control_date"] = result['control_date'].date()
         else:
-            logger.info(f"Контрольная дата установлена для результата {result_item} - {task['number']}")
+            logger.info(f"Контрольная дата не установлена для результата {result_item} - {task['number']}")
             result_item["control_date"] = None
         async with httpx.AsyncClient() as async_requests:
             result_re = await async_requests.post(url=f"{settings.api_base_url}{API_METHODS['result']}", data=result_item,
