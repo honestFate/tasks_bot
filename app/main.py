@@ -13,6 +13,7 @@ from app.database.database import close_http_client
 async def lifespan(app: FastAPI):
     try:
         await set_main_menu(bot)
+        print("Webhook URL:", settings.webhook_url)
         await bot.set_webhook(settings.webhook_url, allowed_updates=["message", "callback_query"])
         print("Webhook установлен успешно")
         yield
