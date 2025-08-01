@@ -3,7 +3,16 @@ import asyncio
 import httpx
 from app.config import settings
 
+# Основной логгер модуля
 logger = logging.getLogger(__name__)
+
+# Отдельный логгер для сообщений об ошибках внутри хендлеров.
+# Он не должен запускать TelegramLogsHandler, поэтому отключаем propagate
+# и используем только стандартный StreamHandler.
+internal_logger = logging.getLogger("telegram_logs_handler_internal")
+internal_logger.propagate = False
+if not internal_logger.handlers:
+    internal_logger.addHandler(logging.StreamHandler())
 
 
 class TelegramLogsHandler(logging.Handler):
@@ -18,7 +27,7 @@ class TelegramLogsHandler(logging.Handler):
             
             asyncio.create_task(self._send_log_async(update_id, log_entry))
         except Exception as e:
-            logger.exception("Ошибка в TelegramLogsHandler: %s", e)
+            internal_logger.exception("Ошибка в TelegramLogsHandler: %s", e)
 
     async def _send_log_async(self, chat_id: str, message: str):
         """Асинхронная отправка сообщения в Telegram"""
@@ -34,16 +43,16 @@ class TelegramLogsHandler(logging.Handler):
                 response = await client.post(url, data=data)
                 
                 if response.status_code != 200:
-                    logger.error(
+                    internal_logger.error(
                         "Ошибка отправки лога в Telegram: %s - %s",
                         response.status_code,
                         response.text,
                     )
                     
         except asyncio.TimeoutError:
-            logger.error("Таймаут при отправке лога в Telegram")
+            internal_logger.error("Таймаут при отправке лога в Telegram")
         except Exception as e:
-            logger.exception(
+            internal_logger.exception(
                 "Неожиданная ошибка при отправке лога в Telegram: %s", e
             )
 
@@ -71,12 +80,12 @@ class SafeTelegramLogsHandler(logging.Handler):
                 response = client.post(url, data=data)
                 
                 if response.status_code != 200:
-                    logger.error(
+                    internal_logger.error(
                         "Ошибка отправки лога в Telegram: %s",
                         response.status_code,
                     )
                     
         except httpx.TimeoutException:
-            logger.error("Таймаут при отправке лога в Telegram")
+            internal_logger.error("Таймаут при отправке лога в Telegram")
         except Exception as e:
-            logger.exception("Ошибка в TelegramLogsHandler: %s", e)
+            internal_logger.exception("Ошибка в TelegramLogsHandler: %s", e)
