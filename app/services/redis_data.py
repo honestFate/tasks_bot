@@ -2,7 +2,15 @@ import redis
 
 from redis.commands.json.path import Path
 
-r = redis.Redis(host='localhost', port=6379, decode_responses=True)
+from app.config import settings
+
+r = redis.Redis(
+    host=settings.redis_host,
+    port=settings.redis_port,
+    username=settings.redis_username,
+    password=settings.redis_password,
+    decode_responses=True,
+)
 
 
 def save_to_redis(task_id, data):
