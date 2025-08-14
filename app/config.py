@@ -1,4 +1,6 @@
 import os
+from typing import Optional
+
 from dotenv import load_dotenv
 from pydantic import HttpUrl, BaseSettings
 import logging
@@ -19,6 +21,8 @@ class Settings(BaseSettings):
     webhook_path: str = f"/{bot_token}"
     redis_host: str = "localhost"
     redis_port: int = 6379
+    redis_username: Optional[str] = os.getenv('REDIS_USERNAME')
+    redis_password: Optional[str] = os.getenv('REDIS_PASSWORD')
     soft_collection_user_code: str = "SoftCollect"
     constant_comment_id: int = 2
     delete_message_timer: int = 2
