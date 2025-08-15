@@ -366,4 +366,5 @@ $RECYCLE.BIN/
 *.lnk
 .idea/
 
+*.acl
 # End of https://www.toptal.com/developers/gitignore/api/python,pycharm,redis,linux,macos,windows
