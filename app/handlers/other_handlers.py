@@ -4,7 +4,8 @@ from time import sleep
 
 from aiogram import Router, F
 from aiogram.filters import CommandStart, Command
-from aiogram.types import Message, ContentType, ReplyKeyboardRemove
+from aiogram.types import Message, ContentType, ReplyKeyboardRemove, CallbackQuery
+from aiogram.fsm.context import FSMContext
 
 from app.config import settings, TASK_GROUP, CENSUS, DEBIT
 from app.database.database import get_trades_tasks_list, put_register, get_worker_f_chat_id
@@ -39,13 +40,16 @@ async def process_register_command(message: Message, ):
 
 
 @router.message(Command(commands='census_task'))
-async def census_tasks_command(message: Message):
+async def census_tasks_command(message: Message, state: FSMContext):
+
+    await state.clear()
+    logger.info(
+        f"Поступила команда tasks - {message.from_user.id} - {message.from_user.username}. "
+        f"Состояние очищено")
 
     tasks_list = await get_trades_tasks_list(message.from_user.id, CENSUS)
 
     # [del_ready_task(message.from_user.id, x['message_id']) for x in tasks_list['text']]  # Удаление плашек выгруженных задач
-
-    logger.info(f"Поступила команда tasks - {message.from_user.id} - {message.from_user.username}")
     if tasks_list['status']:
         if len(tasks_list['text']) > 0:
 
@@ -79,11 +83,14 @@ async def census_tasks_command(message: Message):
 
 
 @router.message(Command(commands='debit_task'))
-async def debit_command(message: Message):
+async def debit_command(message: Message, state: FSMContext):
+
+    await state.clear()
+    logger.info(
+        f"Поступила команда tasks - {message.from_user.id} - {message.from_user.username}. "
+        f"Состояние очищено")
 
     tasks_list = await get_trades_tasks_list(message.from_user.id, DEBIT)
-
-    logger.info(f"Поступила команда tasks - {message.from_user.id} - {message.from_user.username}")
 
     if tasks_list['status']:
         if len(tasks_list['text']) > 0:
@@ -117,6 +124,18 @@ async def debit_command(message: Message):
             await message.answer(text="У вас нет новых задач")
     else:
         await message.answer(text=tasks_list['text'])
+
+
+@router.callback_query()
+async def unhandled_callback(callback: CallbackQuery, state: FSMContext):
+    current_state = await state.get_state()
+    logger.warning(
+        f"Необработанный callback '{callback.data}' - {callback.from_user.id} - {callback.from_user.username} - "
+        f"state={current_state}")
+    try:
+        await callback.answer()
+    except Exception:
+        pass
 
 
 
